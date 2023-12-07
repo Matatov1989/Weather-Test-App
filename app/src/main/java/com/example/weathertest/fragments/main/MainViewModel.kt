@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weathertest.WeatherApplication
 import com.example.weathertest.data.WeatherUiState
+import com.example.weathertest.model.WeatherData
 import com.example.weathertest.repository.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,23 +22,22 @@ class MainViewModel @Inject constructor(private val repository: WeatherRepositor
     init {
         val isAvailableInternet = WeatherApplication.isAvailableInternet
         if (isAvailableInternet) {
-            getWeather()
+            getWeatherFromApi()
         } else {
             weatherUiState.value = WeatherUiState.AvailableInternet(true)
-
-           // TODO : get from local data
+            getWeatherFromCache()
         }
     }
 
-    private fun getWeather() {
+    private fun getWeatherFromApi() {
         viewModelScope.launch {
             try {
-                weatherUiState.value = WeatherUiState.Loading(true)
                 val response = repository.getWeather()
                 val data = response.body()?.weatherData
 
                 data?.let {
                     weatherUiState.value = WeatherUiState.Success(it)
+                    cacheWeather(it)
                 }
             } catch (e: Exception) {
                 Log.e("RESULT_EXCEPTION", "result: $e")
@@ -48,4 +48,22 @@ class MainViewModel @Inject constructor(private val repository: WeatherRepositor
         }
     }
 
+    private fun cacheWeather(weather: WeatherData) {
+        viewModelScope.launch {
+            if (repository.isEmpty() == 0) {
+                repository.cacheWeather(weather)
+            } else {
+                repository.updateCache(weather)
+            }
+        }
+    }
+
+    private fun getWeatherFromCache() {
+        viewModelScope.launch {
+            if (repository.isEmpty() != 0) {
+                val response = repository.getWeatherFromCache()
+                weatherUiState.value = WeatherUiState.Success(response)
+            }
+        }
+    }
 }
