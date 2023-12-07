@@ -1,10 +1,17 @@
 package com.example.weathertest.fragments.map
 
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.weathertest.R
+import com.example.weathertest.data.WeatherUiState
 import com.example.weathertest.databinding.FragmentMapsBinding
 import com.example.weathertest.dialogs.BottomPopup
 import com.example.weathertest.fragments.BaseFragment
@@ -15,16 +22,19 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 class MapsFragment : BaseFragment() {
 
     private lateinit var binding: FragmentMapsBinding
+    private lateinit var viewModel: MapsViewModel
 
     private val callback = OnMapReadyCallback { googleMap ->
 
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+//        val sydney = LatLng(-34.0, 151.0)
+//        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
 
         initListener(googleMap)
     }
@@ -44,14 +54,55 @@ class MapsFragment : BaseFragment() {
         mapFragment?.getMapAsync(callback)
 
         initToolbar(binding.toolbar, getString(R.string.titleMap), true)
+        initObserve()
     }
 
     private fun initListener(googleMap: GoogleMap) {
         googleMap.setOnMapClickListener { latLng ->
             googleMap.clear()
             googleMap.addMarker(MarkerOptions().position(latLng).title("Marker"))
-
-            BottomPopup(requireContext())
+            viewModel.getWeather(convertLatLngToLocation(latLng))
         }
+    }
+
+    private fun initObserve() {
+        viewModel = ViewModelProvider(this)[MapsViewModel::class.java]
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.weatherLiveData.collect { uiState ->
+                    when (uiState) {
+                        is WeatherUiState.Success -> {
+                            val weather = uiState.weatherData
+                            if (weather != null) {
+                                BottomPopup(requireContext(), weather)
+                            }
+                        }
+                        is WeatherUiState.Error -> {
+                            Toast.makeText(
+                                context,
+                                "Error: ${uiState.exception}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        is WeatherUiState.AvailableInternet -> {
+                            if (uiState.isShowMessage) {
+                                val message = getString(R.string.internetUnavailable)
+                                Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
+                            }
+                        }
+                        is WeatherUiState.Loading -> {
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun convertLatLngToLocation(latLng: LatLng): Location {
+        val location = Location("custom_provider_name")
+        location.latitude = latLng.latitude
+        location.longitude = latLng.longitude
+        return location
     }
 }

@@ -109,7 +109,7 @@ class MainFragment : BaseFragment() {
     private fun updateUI(weather: WeatherData) {
         val temperature = ((weather.temperature - 32) * 5 / 9).toInt()
 
-        binding.tvDegree.text = "$temperature\u00B0"
+        binding.tvDegree.text = "$temperature\u00B0 C"
         binding.tvPlace.text = weather.timezone
         binding.tvSummary.text = weather.summary
 
