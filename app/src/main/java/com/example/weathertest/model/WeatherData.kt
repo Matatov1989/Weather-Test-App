@@ -5,5 +5,6 @@ data class WeatherData(
     val temperature: Double,
     val timezone: String,
     val summary: String,
+    val icon: String
 )
 

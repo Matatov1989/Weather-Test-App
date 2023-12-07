@@ -15,11 +15,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.Navigation
+import com.bumptech.glide.Glide
 import com.example.weathertest.R
 import com.example.weathertest.data.WeatherUiState
 import com.example.weathertest.databinding.FragmentMainBinding
 import com.example.weathertest.fragments.BaseFragment
 import com.example.weathertest.model.WeatherData
+import com.example.weathertest.util.Constants.ICON_WEATHER_URL
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -81,9 +83,17 @@ class MainFragment : BaseFragment() {
     }
 
     private fun updateUI(weather: WeatherData) {
-        binding.tvDegree.text = weather.temperature.toString()
+        val temperature = ((weather.temperature - 32) * 5 / 9).toInt()
+
+        binding.tvDegree.text = "$temperature\u00B0"
         binding.tvPlace.text = weather.timezone
-        binding.tvWeather.text = weather.summary
+        binding.tvSummary.text = weather.summary
+
+        val iconUrl = "$ICON_WEATHER_URL${weather.icon}.png"
+
+        Glide.with(requireContext())
+            .load(iconUrl)
+            .into(binding.ivWeather)
     }
 
     private fun initMenuToolBar() {
