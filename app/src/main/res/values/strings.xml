@@ -3,4 +3,7 @@
     <string name="titleWeather">Weather</string>
     <string name="internetUnavailable">Internet unavailable, showing cached data</string>
     <string name="titleMap">Other Locations</string>
+    <string name="dialogSettingsGpsMessage">This feature cannot work offline, please check your internet connection</string>
+    <string name="dialogSettingsGpsTitle">Device Is Offline</string>
+    <string name="btnOK">OK</string>
 </resources>

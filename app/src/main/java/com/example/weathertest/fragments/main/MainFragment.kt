@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ import com.example.weathertest.R
 import com.example.weathertest.WeatherApplication
 import com.example.weathertest.data.WeatherUiState
 import com.example.weathertest.databinding.FragmentMainBinding
+import com.example.weathertest.dialogs.DialogSettingsInformation
 import com.example.weathertest.fragments.BaseFragment
 import com.example.weathertest.model.WeatherData
 import com.example.weathertest.services.GPSService
@@ -40,11 +42,13 @@ class MainFragment : BaseFragment() {
     private lateinit var binding: FragmentMainBinding
     private lateinit var viewModel: MainViewModel
 
+    var isEnable: Boolean = false
+
     private val locationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "location_update") {
                 var location = intent.getParcelableExtra<Location>("location")
-                if (location == null) {
+                if (location == null || isEnable) {
                     location = Location("default_provider")
                     location.latitude = 32.1602438
                     location.longitude = 34.8095785
@@ -140,9 +144,12 @@ class MainFragment : BaseFragment() {
     }
 
     private fun registerLocationService() {
-        requireContext().registerReceiver(locationReceiver, IntentFilter("location_update"))
+        isEnable = isGpsEnabled()
+        if (isEnable) {
+            requireContext().registerReceiver(locationReceiver, IntentFilter("location_update"))
 
-        val startServiceIntent = Intent(requireContext(), GPSService::class.java)
-        requireContext().startService(startServiceIntent)
+            val startServiceIntent = Intent(requireContext(), GPSService::class.java)
+            requireContext().startService(startServiceIntent)
+        }
     }
 }
