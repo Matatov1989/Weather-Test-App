@@ -80,6 +80,9 @@ dependencies {
     // Map
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
+    // location
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
     // glide
     implementation("com.github.bumptech.glide:glide:4.13.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.13.1")

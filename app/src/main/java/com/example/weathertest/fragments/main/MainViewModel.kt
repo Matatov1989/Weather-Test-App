@@ -1,5 +1,6 @@
 package com.example.weathertest.fragments.main
 
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,20 +20,33 @@ class MainViewModel @Inject constructor(private val repository: WeatherRepositor
     private val weatherUiState = MutableStateFlow<WeatherUiState>(WeatherUiState.Success(null))
     val weatherLiveData: StateFlow<WeatherUiState> = weatherUiState
 
-    init {
+//    init {
+//        val isAvailableInternet = WeatherApplication.isAvailableInternet
+//
+////        val location = WeatherApplication.location
+//        if (isAvailableInternet) {
+//            getWeatherFromApi(location!!)
+//        } else {
+//            weatherUiState.value = WeatherUiState.AvailableInternet(true)
+//            getWeatherFromCache()
+//        }
+//    }
+
+    fun getWeather(location: Location) {
         val isAvailableInternet = WeatherApplication.isAvailableInternet
+
         if (isAvailableInternet) {
-            getWeatherFromApi()
+            getWeatherFromApi(location)
         } else {
             weatherUiState.value = WeatherUiState.AvailableInternet(true)
             getWeatherFromCache()
         }
     }
 
-    private fun getWeatherFromApi() {
+    private fun getWeatherFromApi(location: Location) {
         viewModelScope.launch {
             try {
-                val response = repository.getWeather()
+                val response = repository.getWeather(location)
                 val data = response.body()?.weatherData
 
                 data?.let {
