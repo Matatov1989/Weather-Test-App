@@ -146,12 +146,15 @@ class MainFragment : BaseFragment() {
     }
 
     private fun registerLocationService() {
-        isEnable = isGpsEnabled()
-        if (isEnable) {
-            requireContext().registerReceiver(locationReceiver, IntentFilter("location_update"))
+        val isLocationPermission = checkPermissionLocation()
+        if (isLocationPermission) {
+            isEnable = isGpsEnabled()
+            if (isEnable) {
+                requireContext().registerReceiver(locationReceiver, IntentFilter("location_update"))
 
-            val startServiceIntent = Intent(requireContext(), GPSService::class.java)
-            requireContext().startService(startServiceIntent)
+                val startServiceIntent = Intent(requireContext(), GPSService::class.java)
+                requireContext().startService(startServiceIntent)
+            }
         }
     }
 }

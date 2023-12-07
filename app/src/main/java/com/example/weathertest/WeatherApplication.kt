@@ -1,6 +1,9 @@
 package com.example.weathertest
 
+import android.Manifest
 import android.app.Application
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
@@ -20,8 +23,11 @@ class WeatherApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         checkAvailableInternet()
-//        initWorkerGPSTenSeconds()
-//        initWorkerGPSDaily()
+
+        if (checkPermissionLocation()) {
+            initWorkerGPSTenSeconds()
+            initWorkerGPSDaily()
+        }
     }
 
     private fun checkAvailableInternet() {
@@ -57,5 +63,12 @@ class WeatherApplication : Application() {
             .build()
 
         WorkManager.getInstance(this).enqueue(periodicWorkRequestDaily)
+    }
+
+    private fun checkPermissionLocation(): Boolean {
+        return ContextCompat.checkSelfPermission(
+                baseContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
     }
 }

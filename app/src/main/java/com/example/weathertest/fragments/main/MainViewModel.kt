@@ -25,61 +25,54 @@ class MainViewModel @Inject constructor(private val repository: WeatherRepositor
         viewModelScope.launch {
             val isAvailableInternet = WeatherApplication.isAvailableInternet
 
-            if (repository.isEmpty() == 0) {
+            if (repository.isEmptyTable() == 0) {
                 if (isAvailableInternet) {
                     getWeatherFromApi(location)
                 } else {
                     weatherUiState.value = WeatherUiState.AvailableInternet(true)
                     getWeatherFromCache()
                 }
-                getWeatherFromApi(location)
             } else {
                 getWeatherFromCache()
             }
         }
     }
 
-    private fun getWeatherFromApi(location: Location) {
-        viewModelScope.launch {
-            try {
-                weatherUiState.value = WeatherUiState.Loading(true)
-                val response = repository.getWeather(location)
-                val data = response.body()?.weatherData
+    private suspend fun getWeatherFromApi(location: Location) {
+        try {
+            weatherUiState.value = WeatherUiState.Loading(true)
+            val response = repository.getWeather(location)
+            val data = response.body()?.weatherData
 
-                data?.let {
-                    weatherUiState.value = WeatherUiState.Success(it)
-                    insertWeatherToCache(it)
-                }
-            } catch (e: Exception) {
-                Log.e("RESULT_EXCEPTION", "result: $e")
-                weatherUiState.value = WeatherUiState.Error(e)
-            } finally {
-                weatherUiState.value = WeatherUiState.Loading(false)
+            data?.let {
+                weatherUiState.value = WeatherUiState.Success(it)
+                insertWeatherToCache(it)
             }
+        } catch (e: Exception) {
+            Log.e("RESULT_EXCEPTION", "result: $e")
+            weatherUiState.value = WeatherUiState.Error(e)
+        } finally {
+            weatherUiState.value = WeatherUiState.Loading(false)
         }
     }
 
-    private fun insertWeatherToCache(weather: WeatherData) {
-        viewModelScope.launch {
-            if (repository.isEmpty() == 0) {
+    private suspend fun insertWeatherToCache(weather: WeatherData) {
+        if (repository.isEmptyTable() == 0) {
+            repository.cacheWeather(weather)
+        } else {
+            val isEmpty = repository.isEmptyWeatherByTimezone(weather.timezone)
+            if (isEmpty == 0) {
                 repository.cacheWeather(weather)
             } else {
-                val isEmpty = repository.isEmptyWeatherByTimezone(weather.timezone)
-                if (isEmpty == 0) {
-                    repository.cacheWeather(weather)
-                } else {
-                    repository.updateCache(weather)
-                }
+                repository.updateCache(weather)
             }
         }
     }
 
-    private fun getWeatherFromCache() {
-        viewModelScope.launch {
-            if (repository.isEmpty() != 0) {
-                val response = repository.getWeatherFromCache()
-                weatherUiState.value = WeatherUiState.Success(response)
-            }
+    private suspend fun getWeatherFromCache() {
+        if (repository.isEmptyTable() != 0) {
+            val response = repository.getWeatherFromCache()
+            weatherUiState.value = WeatherUiState.Success(response)
         }
     }
 }
