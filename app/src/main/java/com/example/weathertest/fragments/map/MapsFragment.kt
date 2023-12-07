@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -20,7 +19,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 class MapsFragment : BaseFragment() {
@@ -73,16 +71,11 @@ class MapsFragment : BaseFragment() {
                             }
                         }
                         is WeatherUiState.Error -> {
-                            Toast.makeText(
-                                context,
-                                "Error: ${uiState.exception}",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            openToast("Error: ${uiState.exception}")
                         }
                         is WeatherUiState.AvailableInternet -> {
                             if (uiState.isShowMessage) {
-                                val message = getString(R.string.internetUnavailable)
-                                Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
+                                openSnackBar(getString(R.string.internetUnavailable))
                             }
                         }
                         is WeatherUiState.Loading -> {
@@ -93,7 +86,7 @@ class MapsFragment : BaseFragment() {
         }
     }
 
-    fun convertLatLngToLocation(latLng: LatLng): Location {
+    private fun convertLatLngToLocation(latLng: LatLng): Location {
         val location = Location("custom_provider_name")
         location.latitude = latLng.latitude
         location.longitude = latLng.longitude

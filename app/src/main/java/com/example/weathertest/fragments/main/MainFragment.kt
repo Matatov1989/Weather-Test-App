@@ -14,7 +14,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -29,7 +28,6 @@ import com.example.weathertest.fragments.BaseFragment
 import com.example.weathertest.model.WeatherData
 import com.example.weathertest.services.GPSService
 import com.example.weathertest.util.Constants.ICON_WEATHER_URL
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 
@@ -85,16 +83,11 @@ class MainFragment : BaseFragment() {
                             }
                         }
                         is WeatherUiState.Error -> {
-                            Toast.makeText(
-                                context,
-                                "Error: ${uiState.exception}",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            openToast("Error: ${uiState.exception}")
                         }
                         is WeatherUiState.AvailableInternet -> {
                             if (uiState.isShowMessage) {
-                                val message = getString(R.string.internetUnavailable)
-                                Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
+                                openSnackBar(getString(R.string.internetUnavailable))
                             }
                         }
                         is WeatherUiState.Loading -> {
