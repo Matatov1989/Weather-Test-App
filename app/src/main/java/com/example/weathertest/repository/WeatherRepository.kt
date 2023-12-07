@@ -14,5 +14,4 @@ class WeatherRepository @Inject constructor(private val api: WeatherApi, private
     suspend fun isEmpty(): Int = weatherDao.isEmpty()
     suspend fun getWeatherFromCache(): WeatherData = weatherDao.getWeatherFromCache()
     suspend fun updateCache(weather: WeatherData) = weatherDao.updateWeather(weather)
-
 }

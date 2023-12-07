@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +15,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat.registerReceiver
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -25,10 +23,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.example.weathertest.R
-import com.example.weathertest.WeatherApplication
 import com.example.weathertest.data.WeatherUiState
 import com.example.weathertest.databinding.FragmentMainBinding
-import com.example.weathertest.dialogs.DialogSettingsInformation
 import com.example.weathertest.fragments.BaseFragment
 import com.example.weathertest.model.WeatherData
 import com.example.weathertest.services.GPSService

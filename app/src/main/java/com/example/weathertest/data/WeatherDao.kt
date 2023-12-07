@@ -2,12 +2,9 @@ package com.example.weathertest.data
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.weathertest.model.LastWeatherData
 import com.example.weathertest.model.WeatherData
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WeatherDao {
@@ -22,9 +19,4 @@ interface WeatherDao {
 
     @Update
     suspend fun updateWeather(weather: WeatherData)
-
-
-//
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    suspend fun insertService(vararg serviceModel: LastWeatherData)
 }

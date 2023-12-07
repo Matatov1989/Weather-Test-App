@@ -27,7 +27,6 @@
         android:paddingTop="8dp"
         android:paddingBottom="16dp">
 
-
         <TextView
             android:id="@+id/tvPlace"
             android:layout_width="match_parent"
@@ -63,5 +62,4 @@
             tools:text="Sunny"/>
 
     </LinearLayout>
-
 </FrameLayout>

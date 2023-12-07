@@ -20,17 +20,6 @@ class MainViewModel @Inject constructor(private val repository: WeatherRepositor
     private val weatherUiState = MutableStateFlow<WeatherUiState>(WeatherUiState.Success(null))
     val weatherLiveData: StateFlow<WeatherUiState> = weatherUiState
 
-//    init {
-//        val isAvailableInternet = WeatherApplication.isAvailableInternet
-//
-////        val location = WeatherApplication.location
-//        if (isAvailableInternet) {
-//            getWeatherFromApi(location!!)
-//        } else {
-//            weatherUiState.value = WeatherUiState.AvailableInternet(true)
-//            getWeatherFromCache()
-//        }
-//    }
 
     fun getWeather(location: Location) {
         val isAvailableInternet = WeatherApplication.isAvailableInternet
