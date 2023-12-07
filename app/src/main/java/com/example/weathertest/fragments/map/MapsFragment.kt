@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.weathertest.R
 import com.example.weathertest.databinding.FragmentMapsBinding
+import com.example.weathertest.dialogs.BottomPopup
 import com.example.weathertest.fragments.BaseFragment
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -50,6 +51,7 @@ class MapsFragment : BaseFragment() {
             googleMap.clear()
             googleMap.addMarker(MarkerOptions().position(latLng).title("Marker"))
 
+            BottomPopup(requireContext())
         }
     }
 }
