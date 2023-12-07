@@ -38,7 +38,6 @@ class MapsViewModel @Inject constructor(private val repository: WeatherRepositor
 
                 data?.let {
                     weatherUiState.value = WeatherUiState.Success(it)
-//                    cacheWeather(it)
                 }
             } catch (e: Exception) {
                 Log.e("RESULT_EXCEPTION", "result: $e")

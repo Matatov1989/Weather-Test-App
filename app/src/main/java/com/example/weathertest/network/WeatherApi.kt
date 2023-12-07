@@ -15,5 +15,4 @@ interface WeatherApi {
         @Query("lng") longitude: Double = 34.8095785,
         @Header("x-api-key") apiKey: String = Constants.WEATHER_API
     ): Response<WeatherResponse>
-
 }
