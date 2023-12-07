@@ -19,7 +19,7 @@ class MainViewModel @Inject constructor(private val repository: WeatherRepositor
     val weatherLiveData: StateFlow<WeatherUiState> = weatherUiState
 
     init {
-        val isAvailableInternet = WeatherApplication().isAvailableInternet
+        val isAvailableInternet = WeatherApplication.isAvailableInternet
         if (isAvailableInternet) {
             getWeather()
         } else {

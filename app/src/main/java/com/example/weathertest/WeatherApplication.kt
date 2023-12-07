@@ -7,11 +7,12 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class WeatherApplication : Application() {
 
-    var isAvailableInternet: Boolean = false
+    companion object {
+        var isAvailableInternet: Boolean = false
+    }
 
     override fun onCreate() {
         super.onCreate()
-
         checkAvailableInternet()
     }
 
