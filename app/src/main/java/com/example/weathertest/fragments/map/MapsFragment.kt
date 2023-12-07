@@ -9,6 +9,7 @@ import com.example.weathertest.databinding.FragmentMapsBinding
 import com.example.weathertest.fragments.BaseFragment
 
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -23,6 +24,8 @@ class MapsFragment : BaseFragment() {
         val sydney = LatLng(-34.0, 151.0)
         googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+
+        initListener(googleMap)
     }
 
     override fun onCreateView(
@@ -40,5 +43,13 @@ class MapsFragment : BaseFragment() {
         mapFragment?.getMapAsync(callback)
 
         initToolbar(binding.toolbar, getString(R.string.titleMap), true)
+    }
+
+    private fun initListener(googleMap: GoogleMap) {
+        googleMap.setOnMapClickListener { latLng ->
+            googleMap.clear()
+            googleMap.addMarker(MarkerOptions().position(latLng).title("Marker"))
+
+        }
     }
 }
