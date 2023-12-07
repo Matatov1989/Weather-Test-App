@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.WeatherTest" parent="Base.Theme.WeatherTest" />
+
+    <style name="toolbarStyle">
+        <item name="iconTint">@color/white</item>
+        <item name="titleTextColor">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+    </style>
 </resources>
