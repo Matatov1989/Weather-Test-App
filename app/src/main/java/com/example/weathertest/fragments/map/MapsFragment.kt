@@ -79,6 +79,11 @@ class MapsFragment : BaseFragment() {
                             }
                         }
                         is WeatherUiState.Loading -> {
+                            if (uiState.isLoading) {
+                                showLoader()
+                            } else {
+                                hideLoader()
+                            }
                         }
                     }
                 }

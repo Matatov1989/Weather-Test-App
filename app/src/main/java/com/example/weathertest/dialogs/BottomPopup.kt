@@ -54,16 +54,12 @@ class BottomPopup (private val context: Context, private val weather: WeatherDat
         val temperature = ((weather.temperature - 32) * 5 / 9).toInt()
         val strSummary = "$temperature° C, ${weather.summary.split(".")[0]}"
 
-        country.text = weather.timezone
+        country.text = weather.timezone.split("/")[1]
         summary.text = strSummary
 
         val iconUrl = "${Constants.ICON_WEATHER_URL}${weather.icon}.png"
         Glide.with(context)
             .load(iconUrl)
             .into(icon)
-    }
-
-    fun dismiss() {
-        popupWindow.dismiss()
     }
 }

@@ -91,8 +91,12 @@ class MainFragment : BaseFragment() {
                             }
                         }
                         is WeatherUiState.Loading -> {
+                            if (uiState.isLoading) {
+                                showLoader()
+                            } else {
+                                hideLoader()
+                            }
                         }
-
                         else -> {}
                     }
                 }

@@ -3,17 +3,24 @@ package com.example.weathertest.fragments
 import android.content.Context
 import android.location.LocationManager
 import android.os.Bundle
-import android.os.Message
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.example.weathertest.dialogs.CustomLoadingDialog
 import com.example.weathertest.dialogs.DialogSettingsInformation
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 open class BaseFragment : Fragment() {
+
+    private lateinit var loadingDialog: CustomLoadingDialog
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        loadingDialog = CustomLoadingDialog(requireContext())
+    }
 
     fun initToolbar(toolbar: Toolbar, title: String, isBackButton: Boolean = false) {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
@@ -48,5 +55,13 @@ open class BaseFragment : Fragment() {
 
     fun openSnackBar(message: String) {
         Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
+    }
+
+    fun showLoader() {
+        loadingDialog.show()
+    }
+
+    fun hideLoader() {
+        loadingDialog.dismiss()
     }
 }

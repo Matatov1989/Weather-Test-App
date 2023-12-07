@@ -35,6 +35,7 @@ class MainViewModel @Inject constructor(private val repository: WeatherRepositor
     private fun getWeatherFromApi(location: Location) {
         viewModelScope.launch {
             try {
+                weatherUiState.value = WeatherUiState.Loading(true)
                 val response = repository.getWeather(location)
                 val data = response.body()?.weatherData
 
