@@ -86,4 +86,6 @@ dependencies {
     // glide
     implementation("com.github.bumptech.glide:glide:4.13.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.13.1")
+    // WorkManager
+    implementation("androidx.work:work-runtime:2.9.0")
 }

@@ -103,6 +103,8 @@ class MainFragment : BaseFragment() {
                         }
                         is WeatherUiState.Loading -> {
                         }
+
+                        else -> {}
                     }
                 }
             }
