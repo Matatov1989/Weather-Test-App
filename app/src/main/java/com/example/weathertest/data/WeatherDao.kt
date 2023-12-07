@@ -19,4 +19,9 @@ interface WeatherDao {
 
     @Update
     suspend fun updateWeather(weather: WeatherData)
+
+    @Query("SELECT COUNT() FROM WeatherTable WHERE timezone < :timeZone")
+    suspend fun isEmptyWeatherByTimezone(timeZone: String): Int
+
+
 }

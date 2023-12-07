@@ -20,8 +20,8 @@ class WeatherApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         checkAvailableInternet()
-        initWorkerGPSTenSeconds()
-        initWorkerGPSDaily()
+//        initWorkerGPSTenSeconds()
+//        initWorkerGPSDaily()
     }
 
     private fun checkAvailableInternet() {

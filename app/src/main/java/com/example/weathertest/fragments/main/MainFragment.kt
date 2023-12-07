@@ -72,6 +72,13 @@ class MainFragment : BaseFragment() {
     private fun initObserve() {
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
+
+        val location = Location("default_provider")
+        location.latitude = 32.1602438
+        location.longitude = 34.8095785
+
+        viewModel.getWeather(location)
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.weatherLiveData.collect { uiState ->

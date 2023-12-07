@@ -22,13 +22,20 @@ class MainViewModel @Inject constructor(private val repository: WeatherRepositor
 
 
     fun getWeather(location: Location) {
-        val isAvailableInternet = WeatherApplication.isAvailableInternet
+        viewModelScope.launch {
+            val isAvailableInternet = WeatherApplication.isAvailableInternet
 
-        if (isAvailableInternet) {
-            getWeatherFromApi(location)
-        } else {
-            weatherUiState.value = WeatherUiState.AvailableInternet(true)
-            getWeatherFromCache()
+            if (repository.isEmpty() == 0) {
+                if (isAvailableInternet) {
+                    getWeatherFromApi(location)
+                } else {
+                    weatherUiState.value = WeatherUiState.AvailableInternet(true)
+                    getWeatherFromCache()
+                }
+                getWeatherFromApi(location)
+            } else {
+                getWeatherFromCache()
+            }
         }
     }
 
@@ -41,7 +48,7 @@ class MainViewModel @Inject constructor(private val repository: WeatherRepositor
 
                 data?.let {
                     weatherUiState.value = WeatherUiState.Success(it)
-                    cacheWeather(it)
+                    insertWeatherToCache(it)
                 }
             } catch (e: Exception) {
                 Log.e("RESULT_EXCEPTION", "result: $e")
@@ -52,12 +59,17 @@ class MainViewModel @Inject constructor(private val repository: WeatherRepositor
         }
     }
 
-    private fun cacheWeather(weather: WeatherData) {
+    private fun insertWeatherToCache(weather: WeatherData) {
         viewModelScope.launch {
             if (repository.isEmpty() == 0) {
                 repository.cacheWeather(weather)
             } else {
-                repository.updateCache(weather)
+                val isEmpty = repository.isEmptyWeatherByTimezone(weather.timezone)
+                if (isEmpty == 0) {
+                    repository.cacheWeather(weather)
+                } else {
+                    repository.updateCache(weather)
+                }
             }
         }
     }
